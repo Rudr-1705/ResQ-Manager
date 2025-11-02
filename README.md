@@ -45,11 +45,11 @@
 <!-- Fourth Section -->
 ## Logisim Circuit Diagram
 <details>
-  <summary>Detail</summary>
-    
+  
+    ![WhatsApp Image 2025-11-02 at 22 17 20_29b4b0a1](https://github.com/user-attachments/assets/54e0cb58-deef-4908-8280-d0853312b677)
 
-  > Update a neat logisim circuit diagram
-</details>
+</de![WhatsApp Image 2025-11-02 at 23 46 29_cd99ccfd](https://github.com/user-attachments/assets/755f041d-d8cf-48ee-b74b-ab291b0f959d)
+tails>
 
 <!-- Fifth Section -->
 ## Verilog Code
