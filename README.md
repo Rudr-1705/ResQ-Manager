@@ -1538,6 +1538,7 @@
     endmodule
       
 </details>
+</details>
 <details>
     <summary>Verilog Dataflow level code</summary>
       <details>
