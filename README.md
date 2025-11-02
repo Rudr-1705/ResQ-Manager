@@ -2819,19 +2819,18 @@ endmodule
     <summary>Verilog Gate level code</summary>
       <details>
       <summary>Main FSM Gate level code</summary>
-      ```
-      /**
- * Module: Main_gate
- */
-module Main_gate (
-    // Inputs
-    input wire         Clock,
-    input wire         Insert,
-    input wire         Serve,
-    input wire         Reset_Queue,
-    input wire [7:0]   Zone,
-    input wire [1:0]   Priority,
-    input wire [1:0]   Resource_line,
+      
+     //Module: Main_gate
+    
+    module Main_gate (
+      // Inputs
+      input wire         Clock,
+      input wire         Insert,
+      input wire         Serve,
+      input wire         Reset_Queue,
+      input wire [7:0]   Zone,
+      input wire [1:0]   Priority,
+      input wire [1:0]   Resource_line,
 
     // Outputs
     output wire        Food_00,
@@ -2849,7 +2848,7 @@ module Main_gate (
     output wire        Shelter_Boost,
     output wire        Food_Valid,
     output wire        Food_Boost
-);
+    );
 
     // --- Internal Wires ---
 
