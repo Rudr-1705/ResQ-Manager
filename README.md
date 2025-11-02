@@ -1543,11 +1543,11 @@
     <summary>Verilog Dataflow level code</summary>
       <details>
       <summary>Main FSM Dataflow level code</summary>
-      ```
-      /**
- * Module: Main_dataflow
- */
-module Main_dataflow (
+    
+      
+    //Module: Main_dataflow
+ 
+     module Main_dataflow (
     // Inputs
     input wire         Clock,
     input wire         Insert,        // Button
@@ -1574,7 +1574,7 @@ module Main_dataflow (
     output wire        Shelter_Boost,
     output wire        Food_Valid,
     output wire        Food_Boost
-);
+    );
 
     // --- Internal Wires ---
 
