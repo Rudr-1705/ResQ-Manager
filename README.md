@@ -39,7 +39,14 @@
 <details>
   <summary>Detail</summary>
 
-  > Explain how your model works with the help of a functional table (compulsory) followed by the flowchart.
+  ## Shelter Module Functional Table
+  
+  ![WhatsApp Image 2025-11-02 at 23 19 12_8fe550a4](https://github.com/user-attachments/assets/5476a9f7-8a6e-4760-81a2-2f2940c6e880)
+
+  ## Food Module Functional Table 
+  
+  ![WhatsApp Image 2025-11-02 at 23 20 23_1db290d0](https://github.com/user-attachments/assets/cb4fce06-9bb4-4b68-9a9c-f25b92eb4de5)
+
 </details>
 
 <!-- Fourth Section -->
