@@ -1728,8 +1728,8 @@
         .Select_Shelter   (w_final_select_shelter)
     );
 
-endmodule
-      ```
+    endmodule
+          ```
       </details>
       <details>
       <summary>Shelter Module Dataflow level code</summary>
@@ -3018,8 +3018,7 @@ endmodule
         .Select_Shelter   (w_final_select_shelter)
     );
 
-endmodule
-      ```
+    endmodule
       </details>
       <details>
       <summary>Shelter Module Gate level code</summary>
