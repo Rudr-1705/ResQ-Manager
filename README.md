@@ -28,7 +28,7 @@
 
 ## Functional Block Diagram
 <details>
-  ![Flowchart](S1-T2-25-26\assets\flowchart.jpg)
+  ![Flowchart](assets/flowchart.jpg)
 
   
 </details>
