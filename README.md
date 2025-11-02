@@ -50,7 +50,7 @@
 
 
 </de![WhatsApp Image 2025-11-02 at 23 46 29_cd99ccfd](https://github.com/user-attachments/assets/755f041d-d8cf-48ee-b74b-ab291b0f959d)
-tails>
+
 
 <!-- Fifth Section -->
 ## Verilog Code
@@ -61,11 +61,10 @@ tails>
     <summary>Verilog Behavioral level code</summary>
       <details>
       <summary>Main FSM Behavioral level code</summary>
-      ```
-      /**
- * Module: Main_behavioral
- */
-module Main_behavioral (
+      
+     * Module: Main_behavioral
+   
+    module Main_behavioral (
     // Inputs
     input wire         Clock,
     input wire         Insert,        // Button
@@ -92,7 +91,7 @@ module Main_behavioral (
     output wire        Shelter_Boost,
     output wire        Food_Valid,
     output wire        Food_Boost
-);
+    );
 
     // --- Internal Wires ---
 
@@ -245,9 +244,9 @@ module Main_behavioral (
         .Select_Shelter   (w_final_select_shelter)
     );
 
-endmodule
-      ```
-      </details>
+    endmodule
+     
+   </details>
       <details>
       <summary>Shelter Module Behavioral level code</summary>
         
