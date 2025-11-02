@@ -60,13 +60,10 @@
 <img width="1070" height="619" alt="9" src="https://github.com/user-attachments/assets/f9d4c181-c236-4880-a4a8-58c32128b2df" />
 
 <img width="939" height="651" alt="8" src="https://github.com/user-attachments/assets/53f70d30-b450-4b1f-85e8-ec1f93b2dffc" />
-![1](https://github.com/user-attachments/assets/51689fd3-f4fd-412c-bc45-ec29ab![2](https://github.com/user-attachments/assets/c90af90e-8860-46ab-883c-8674785a0a37)
-8cdf4d)
-![3](https://github.com/user-attachments/assets/a5fc045b-d6eb-48c4-adaa-018048fe81c3)
-![4](https://github.com/user-attachments/assets/3fabedc2-8971-493c-944e-dd2899abeaea)
-![5](https://github.com/user-attachments/assets/59a7cee5-1e71-4de9-abfa-4eb2f6cc3d29)
-![6](https://github.com/user-attachments/assets/071711e5-4014-486b-89a9-2a42c4ecb1b1)
-![7](https://github.com/user-attachments/assets/37799e7a-efe0-49a2-b4f4-7abb6de229ac)
+
+![1](https://github.com/user-attachments/assets/b99b09a1-f420-4cd4-b603-bc3a6e20f97b)
+
+![2](https://github.com/user-attachments/assets/8a744466-237f-4ffd-bfba-d52038231058)
 
 
 </details>
