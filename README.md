@@ -3825,15 +3825,15 @@ endmodule
   </details>
       <details>
       <summary>Food Module Gate level code</summary>
-      ```
+    
       // ============================================================================
-// MODULE: priority_Queue_gate
-// ============================================================================
+    // MODULE: priority_Queue_gate
+    // ============================================================================
 
-// ----------------------------------------------------------------------------
-// MODULE: Request Register (Gate Level)
-// ----------------------------------------------------------------------------
-module request_register_complex_gate_food (
+    // ----------------------------------------------------------------------------
+    // MODULE: Request Register (Gate Level)
+    // ----------------------------------------------------------------------------
+    module request_register_complex_gate_food (
     input wire clk,
     input wire rst_n,
     input wire write_en,
@@ -3847,7 +3847,7 @@ module request_register_complex_gate_food (
     output wire [7:0] waiting_time_out,
     output wire valid_out,
     output wire boost_out
-);
+    );
 
     // Internal wires
     wire [7:0] zone_id_reg;
@@ -3970,17 +3970,17 @@ module request_register_complex_gate_food (
     assign valid_out = valid_reg;
     assign boost_out = boost_reg;
 
-endmodule
+    endmodule
 
-// ----------------------------------------------------------------------------
-// MODULE: Threshold Comparator (Gate Level)
-// ----------------------------------------------------------------------------
-module threshold_comparator_complex_gate_food (
+    // ----------------------------------------------------------------------------
+    // MODULE: Threshold Comparator (Gate Level)
+    // ----------------------------------------------------------------------------
+    module threshold_comparator_complex_gate_food (
     input wire [7:0] waiting_time,
     input wire [7:0] threshold,
     input wire valid,
     output wire should_boost
-);
+    );
 
     wire a_gt_b, a_eq_b;
     wire a_ge_b;
@@ -3996,12 +3996,12 @@ module threshold_comparator_complex_gate_food (
     or ge_or (a_ge_b, a_gt_b, a_eq_b);
     and boost_and (should_boost, a_ge_b, valid);
 
-endmodule
+    endmodule
 
-// ----------------------------------------------------------------------------
-// MODULE: Priority Encoder 2-to-1 (Gate Level)
-// ----------------------------------------------------------------------------
-module priority_encoder_2to1_complex_gate_food (
+    // ----------------------------------------------------------------------------
+    // MODULE: Priority Encoder 2-to-1 (Gate Level)
+    // ----------------------------------------------------------------------------
+    module priority_encoder_2to1_complex_gate_food (
     input  wire [7:0] a_zone_id,
     input  wire [1:0] a_priority,
     input  wire [7:0] a_waiting_time,
@@ -4020,7 +4020,7 @@ module priority_encoder_2to1_complex_gate_food (
     output wire       out_boost,
     output wire       out_valid,
     output wire       select_a
-);
+    );
 
     // Valid-only cases
     wire not_b_valid, not_a_valid;
@@ -4103,19 +4103,19 @@ module priority_encoder_2to1_complex_gate_food (
     mux_2to1_1bit boost_mux (.in0(b_boost), .in1(a_boost), .sel(select_a), .out(out_boost));
     mux_2to1_1bit valid_mux (.in0(b_valid), .in1(a_valid), .sel(select_a), .out(out_valid));
 
-endmodule
+    endmodule
 
-// ----------------------------------------------------------------------------
-// MODULE: Serve Decoder (Gate Level)
-// ----------------------------------------------------------------------------
-module serve_decoder_complex_gate_food (
+    // ----------------------------------------------------------------------------
+    // MODULE: Serve Decoder (Gate Level)
+    // ----------------------------------------------------------------------------
+    module serve_decoder_complex_gate_food (
     input wire serve,
     input wire [1:0] selected_index,
     output wire serve_0,
     output wire serve_1,
     output wire serve_2,
     output wire serve_3
-);
+    );
 
     wire index_0, index_1;
     wire not_index_0, not_index_1;
@@ -4131,12 +4131,12 @@ module serve_decoder_complex_gate_food (
     and3 and_serve2 (serve_2, index_1, not_index_0, serve);
     and3 and_serve3 (serve_3, index_1, index_0, serve);
 
-endmodule
+    endmodule
 
-// ----------------------------------------------------------------------------
-// MODULE: Queue Storage (Gate Level)
-// ----------------------------------------------------------------------------
-module queue_storage_complex_gate_food (
+    // ----------------------------------------------------------------------------
+    // MODULE: Queue Storage (Gate Level)
+    // ----------------------------------------------------------------------------
+    module queue_storage_complex_gate_food (
     input wire clk,
     input wire rst_n,
     input wire insert,
@@ -4173,7 +4173,7 @@ module queue_storage_complex_gate_food (
     output wire entry3_valid,
     
     output wire queue_full
-);
+    );
 
     // Write enable signals
     wire write_en_0, write_en_1, write_en_2, write_en_3;
@@ -4352,12 +4352,12 @@ module queue_storage_complex_gate_food (
     // Queue full signal
     and4 queue_full_and (queue_full, entry0_valid, entry1_valid, entry2_valid, entry3_valid);
 
-endmodule
+    endmodule
 
-// ----------------------------------------------------------------------------
-// MODULE: Priority Selector Tree (Gate Level)
-// ----------------------------------------------------------------------------
-module priority_selector_tree_complex_gate_food (
+    // ----------------------------------------------------------------------------
+    // MODULE: Priority Selector Tree (Gate Level)
+    // ----------------------------------------------------------------------------
+    module priority_selector_tree_complex_gate_food (
     input wire [7:0] entry0_zone_id,
     input wire [1:0] entry0_priority,
     input wire [7:0] entry0_waiting_time,
@@ -4388,7 +4388,7 @@ module priority_selector_tree_complex_gate_food (
     output wire selected_boost,
     output wire selected_valid,
     output wire [1:0] selected_index
-);
+    );
 
     wire [7:0] winner_01_zone, winner_23_zone;
     wire [1:0] winner_01_pri, winner_23_pri;
@@ -4481,12 +4481,12 @@ module priority_selector_tree_complex_gate_food (
         .out(selected_index)
     );
 
-endmodule
+    endmodule
 
-// ----------------------------------------------------------------------------
-// MODULE: Complex Priority Queue (Top Level)
-// ----------------------------------------------------------------------------
-module priority_Queue_gate_food (
+    // ----------------------------------------------------------------------------
+    // MODULE: Complex Priority Queue (Top Level)
+    // ----------------------------------------------------------------------------
+    module priority_Queue_gate_food (
     input wire clk,
     input wire rst_n,
     input wire insert,
@@ -4502,7 +4502,7 @@ module priority_Queue_gate_food (
     output wire to_fsm_boost,
     output wire to_fsm_valid,
     output wire queue_full
-);
+    );
 
     wire [7:0] entry0_zone_id, entry1_zone_id, entry2_zone_id, entry3_zone_id;
     wire [1:0] entry0_priority, entry1_priority, entry2_priority, entry3_priority;
@@ -4576,18 +4576,18 @@ module priority_Queue_gate_food (
         .selected_index(selected_index)
     );
 
-endmodule
-      ```
-      </details>
+    endmodule
+     
+  </details>
 </details>
   <details>
     <summary>TestBench</summary>
       <details>
       <summary>Main FSM TestBench</summary>
-      ```
+    
       `timescale 1ns / 1ps
 
-module Main_tb;
+    module Main_tb;
 
     // --- Testbench Registers (Inputs) ---
     reg         Clock;
@@ -4782,9 +4782,9 @@ module Main_tb;
         $finish;
     end
 
-endmodule
+    endmodule
       ```
-      </details>
+  </details>
       <details>
       <summary>Shelter Module TestBench</summary>
         
@@ -5127,8 +5127,8 @@ endmodule
   </details>
       <details>
       <summary>Food Module TestBench</summary>
-       ```
-       module food_allocator_tb;
+     
+     module food_allocator_tb;
 
     // Parameters
     parameter QUEUE_DEPTH = 8;
@@ -5321,9 +5321,9 @@ endmodule
                  valid_request_df, zone_id_out_df, priority_out_df);
     end
 
-endmodule
-       ```
-      </details>
+    endmodule
+    
+  </details>
     </details>
 </details>
 </details>
