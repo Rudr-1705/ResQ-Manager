@@ -52,6 +52,7 @@
 
 <!-- Fifth Section -->
 ## Verilog Code
+
 <details>
     <summary>Verilog Behavioral level code</summary>
       <details>
@@ -258,6 +259,7 @@
 
     endmodule
       </details>
+      
 </details>
 <details>
     <summary>Verilog Dataflow level code</summary>
