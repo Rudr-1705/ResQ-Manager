@@ -5,7 +5,7 @@
 // ----------------------------------------------------------------------------
 // MODULE: Request Register (Dataflow)
 // ----------------------------------------------------------------------------
-module request_register_dataflow (
+module request_register_dataflow_shelter (
     input wire clk,
     input wire rst_n,
     input wire write_en,
@@ -65,7 +65,7 @@ endmodule
 // ----------------------------------------------------------------------------
 // MODULE: Threshold Comparator (Dataflow)
 // ----------------------------------------------------------------------------
-module threshold_comparator_dataflow (
+module threshold_comparator_dataflow_shelter (
     input wire [7:0] waiting_time,
     input wire [7:0] threshold,
     input wire valid,
@@ -79,7 +79,7 @@ endmodule
 // ----------------------------------------------------------------------------
 // MODULE: Priority Encoder 2-to-1 (Dataflow)
 // ----------------------------------------------------------------------------
-module priority_encoder_2to1_dataflow (
+module priority_encoder_2to1_dataflow_shelter (
     input wire [7:0] a_zone_id,
     input wire [1:0] a_priority,
     input wire [7:0] a_waiting_time,
@@ -139,7 +139,7 @@ endmodule
 // ----------------------------------------------------------------------------
 // MODULE: Serve Decoder (Dataflow)
 // ----------------------------------------------------------------------------
-module serve_decoder_dataflow (
+module serve_decoder_dataflow_shelter (
     input wire serve,
     input wire [1:0] selected_index,
     output wire serve_0,
@@ -158,7 +158,7 @@ endmodule
 // ----------------------------------------------------------------------------
 // MODULE: Queue Storage (Dataflow)
 // ----------------------------------------------------------------------------
-module queue_storage_dataflow (
+module queue_storage_dataflow_shelter (
     input wire clk,
     input wire rst_n,
     input wire insert,
@@ -219,7 +219,8 @@ module queue_storage_dataflow (
     assign write_en_3 = insert & entry0_valid & entry1_valid & entry2_valid & ~entry3_valid;
     
     // Serve decoder
-    serve_decoder_dataflow serve_dec (
+    serve_decoder_dataflow_shelter
+ serve_dec (
         .serve(serve),
         .selected_index(selected_index),
         .serve_0(serve_0),
@@ -241,7 +242,7 @@ module queue_storage_dataflow (
     assign clear_3 = serve_3 | cancel_3;
     
     // Request registers
-    request_register_dataflow reg0 (
+    request_register_dataflow_shelter reg0 (
         .clk(clk),
         .rst_n(rst_n),
         .write_en(write_en_0),
@@ -257,7 +258,7 @@ module queue_storage_dataflow (
         .boost_out(entry0_boost)
     );
     
-    request_register_dataflow reg1 (
+    request_register_dataflow_shelter reg1 (
         .clk(clk),
         .rst_n(rst_n),
         .write_en(write_en_1),
@@ -273,7 +274,7 @@ module queue_storage_dataflow (
         .boost_out(entry1_boost)
     );
     
-    request_register_dataflow reg2 (
+    request_register_dataflow_shelter reg2 (
         .clk(clk),
         .rst_n(rst_n),
         .write_en(write_en_2),
@@ -289,7 +290,7 @@ module queue_storage_dataflow (
         .boost_out(entry2_boost)
     );
     
-    request_register_dataflow reg3 (
+    request_register_dataflow_shelter reg3 (
         .clk(clk),
         .rst_n(rst_n),
         .write_en(write_en_3),
@@ -306,28 +307,32 @@ module queue_storage_dataflow (
     );
     
     // Threshold comparators
-    threshold_comparator_dataflow comp0 (
+    threshold_comparator_dataflow_shelter
+ comp0 (
         .waiting_time(entry0_waiting_time),
         .threshold(threshold),
         .valid(entry0_valid),
         .should_boost(should_boost_0)
     );
     
-    threshold_comparator_dataflow comp1 (
+    threshold_comparator_dataflow_shelter
+ comp1 (
         .waiting_time(entry1_waiting_time),
         .threshold(threshold),
         .valid(entry1_valid),
         .should_boost(should_boost_1)
     );
     
-    threshold_comparator_dataflow comp2 (
+    threshold_comparator_dataflow_shelter
+ comp2 (
         .waiting_time(entry2_waiting_time),
         .threshold(threshold),
         .valid(entry2_valid),
         .should_boost(should_boost_2)
     );
     
-    threshold_comparator_dataflow comp3 (
+    threshold_comparator_dataflow_shelter
+ comp3 (
         .waiting_time(entry3_waiting_time),
         .threshold(threshold),
         .valid(entry3_valid),
@@ -342,7 +347,7 @@ endmodule
 // ----------------------------------------------------------------------------
 // MODULE: Priority Selector Tree (Dataflow)
 // ----------------------------------------------------------------------------
-module priority_selector_tree_dataflow (
+module priority_selector_tree_dataflow_shelter (
     input wire [7:0] entry0_zone_id,
     input wire [1:0] entry0_priority,
     input wire [7:0] entry0_waiting_time,
@@ -383,7 +388,8 @@ module priority_selector_tree_dataflow (
     wire select_01_a, select_23_a, select_final_a;
     
     // First level: compare 0 vs 1
-    priority_encoder_2to1_dataflow comp_01 (
+    priority_encoder_2to1_dataflow_shelter
+ comp_01 (
         .a_zone_id(entry0_zone_id),
         .a_priority(entry0_priority),
         .a_waiting_time(entry0_waiting_time),
@@ -403,7 +409,8 @@ module priority_selector_tree_dataflow (
     );
     
     // First level: compare 2 vs 3
-    priority_encoder_2to1_dataflow comp_23 (
+    priority_encoder_2to1_dataflow_shelter
+ comp_23 (
         .a_zone_id(entry2_zone_id),
         .a_priority(entry2_priority),
         .a_waiting_time(entry2_waiting_time),
@@ -423,7 +430,8 @@ module priority_selector_tree_dataflow (
     );
     
     // Final level: compare winners
-    priority_encoder_2to1_dataflow comp_final (
+    priority_encoder_2to1_dataflow_shelter
+ comp_final (
         .a_zone_id(winner_01_zone),
         .a_priority(winner_01_pri),
         .a_waiting_time(winner_01_wait),
@@ -451,7 +459,7 @@ module priority_selector_tree_dataflow (
 
 endmodule
 
-module priority_queue_dataflow (
+module priority_queue_dataflow_shelter (
     input wire clk,
     input wire rst_n,
     input wire insert,
@@ -477,7 +485,8 @@ module priority_queue_dataflow (
     wire [1:0] selected_index;
     wire [7:0] selected_waiting_time;
     
-    queue_storage_dataflow queue (
+    queue_storage_dataflow_shelter
+ queue (
         .clk(clk),
         .rst_n(rst_n),
         .insert(insert),
@@ -511,7 +520,7 @@ module priority_queue_dataflow (
         .queue_full(queue_full)
     );
     
-    priority_selector_tree_dataflow selector (
+    priority_selector_tree_dataflow_shelter selector (
         .entry0_zone_id(entry0_zone_id),
         .entry0_priority(entry0_priority),
         .entry0_waiting_time(entry0_waiting_time),

@@ -1,11 +1,11 @@
 // ============================================================================
-// MODULE 2: priority_queue
+// MODULE: priority_queue_dataflow
 // ============================================================================
 
 // ----------------------------------------------------------------------------
-// MODULE: Request Register (Behavioral)
+// MODULE: Request Register (Dataflow)
 // ----------------------------------------------------------------------------
-module request_register_beh (
+module request_register_dataflow_food (
     input wire clk,
     input wire rst_n,
     input wire write_en,
@@ -21,6 +21,28 @@ module request_register_beh (
     output reg boost_out
 );
 
+    wire [7:0] next_zone_id;
+    wire [1:0] next_priority;
+    wire [7:0] next_waiting_time;
+    wire next_valid;
+    wire next_boost;
+    
+    // Zone ID and Priority logic
+    assign next_zone_id = clear ? 8'd0 : (write_en ? zone_id_in : zone_id_out);
+    assign next_priority = clear ? 2'd0 : (write_en ? priority_in : priority_out);
+    
+    // Waiting time logic
+    assign next_waiting_time = clear ? 8'd0 :
+                               (write_en ? 8'd0 :
+                               (increment_wait & valid_out) ? waiting_time_out + 8'd1 :
+                               waiting_time_out);
+    
+    // Valid bit logic
+    assign next_valid = (write_en | valid_out) & ~clear;
+    
+    // Boost flag logic
+    assign next_boost = (set_boost | boost_out) & ~clear;
+    
     always @(posedge clk or negedge rst_n) begin
         if (!rst_n) begin
             zone_id_out <= 8'd0;
@@ -29,58 +51,35 @@ module request_register_beh (
             valid_out <= 1'b0;
             boost_out <= 1'b0;
         end
-        else if (clear) begin
-            zone_id_out <= 8'd0;
-            priority_out <= 2'd0;
-            waiting_time_out <= 8'd0;
-            valid_out <= 1'b0;
-            boost_out <= 1'b0;
-        end
         else begin
-            if (write_en) begin
-                zone_id_out <= zone_id_in;
-                priority_out <= priority_in;
-                waiting_time_out <= 8'd0;
-                valid_out <= 1'b1;
-                boost_out <= 1'b0;
-            end
-            else begin
-                if (increment_wait && valid_out) begin
-                    waiting_time_out <= waiting_time_out + 8'd1;
-                end
-                
-                if (set_boost) begin
-                    boost_out <= 1'b1;
-                end
-            end
+            zone_id_out <= next_zone_id;
+            priority_out <= next_priority;
+            waiting_time_out <= next_waiting_time;
+            valid_out <= next_valid;
+            boost_out <= next_boost;
         end
     end
 
 endmodule
 
 // ----------------------------------------------------------------------------
-// MODULE: Threshold Comparator (Behavioral)
+// MODULE: Threshold Comparator (Dataflow)
 // ----------------------------------------------------------------------------
-module threshold_comparator_beh (
+module threshold_comparator_dataflow_food (
     input wire [7:0] waiting_time,
     input wire [7:0] threshold,
     input wire valid,
-    output reg should_boost
+    output wire should_boost
 );
 
-    always @(*) begin
-        if (valid && (waiting_time >= threshold))
-            should_boost = 1'b1;
-        else
-            should_boost = 1'b0;
-    end
+    assign should_boost = (waiting_time >= threshold) & valid;
 
 endmodule
 
 // ----------------------------------------------------------------------------
-// MODULE: Priority Encoder 2-to-1 (Behavioral)
+// MODULE: Priority Encoder 2-to-1 (Dataflow)
 // ----------------------------------------------------------------------------
-module priority_encoder_2to1_beh (
+module priority_encoder_2to1_dataflow_food (
     input wire [7:0] a_zone_id,
     input wire [1:0] a_priority,
     input wire [7:0] a_waiting_time,
@@ -93,146 +92,73 @@ module priority_encoder_2to1_beh (
     input wire b_boost,
     input wire b_valid,
     
-    output reg [7:0] out_zone_id,
-    output reg [1:0] out_priority,
-    output reg [7:0] out_waiting_time,
-    output reg out_boost,
-    output reg out_valid,
-    output reg select_a
+    output wire [7:0] out_zone_id,
+    output wire [1:0] out_priority,
+    output wire [7:0] out_waiting_time,
+    output wire out_boost,
+    output wire out_valid,
+    output wire select_a
 );
 
-    always @(*) begin
-        // Default: select nothing
-        select_a = 1'b0;
-        out_zone_id = 8'd0;
-        out_priority = 2'd0;
-        out_waiting_time = 8'd0;
-        out_boost = 1'b0;
-        out_valid = 1'b0;
-        
-        // Priority selection logic
-        if (!a_valid && !b_valid) begin
-            // Both invalid
-            select_a = 1'b0;
-            out_valid = 1'b0;
-        end
-        else if (a_valid && !b_valid) begin
-            // Only A valid
-            select_a = 1'b1;
-            out_zone_id = a_zone_id;
-            out_priority = a_priority;
-            out_waiting_time = a_waiting_time;
-            out_boost = a_boost;
-            out_valid = 1'b1;
-        end
-        else if (!a_valid && b_valid) begin
-            // Only B valid
-            select_a = 1'b0;
-            out_zone_id = b_zone_id;
-            out_priority = b_priority;
-            out_waiting_time = b_waiting_time;
-            out_boost = b_boost;
-            out_valid = 1'b1;
-        end
-        else begin
-            // Both valid - apply priority rules
-            if (a_boost && !b_boost) begin
-                // A boosted, B not
-                select_a = 1'b1;
-                out_zone_id = a_zone_id;
-                out_priority = a_priority;
-                out_waiting_time = a_waiting_time;
-                out_boost = a_boost;
-                out_valid = 1'b1;
-            end
-            else if (!a_boost && b_boost) begin
-                // B boosted, A not
-                select_a = 1'b0;
-                out_zone_id = b_zone_id;
-                out_priority = b_priority;
-                out_waiting_time = b_waiting_time;
-                out_boost = b_boost;
-                out_valid = 1'b1;
-            end
-            else begin
-                // Both boosted or both not boosted
-                if (a_priority > b_priority) begin
-                    // A higher priority
-                    select_a = 1'b1;
-                    out_zone_id = a_zone_id;
-                    out_priority = a_priority;
-                    out_waiting_time = a_waiting_time;
-                    out_boost = a_boost;
-                    out_valid = 1'b1;
-                end
-                else if (b_priority > a_priority) begin
-                    // B higher priority
-                    select_a = 1'b0;
-                    out_zone_id = b_zone_id;
-                    out_priority = b_priority;
-                    out_waiting_time = b_waiting_time;
-                    out_boost = b_boost;
-                    out_valid = 1'b1;
-                end
-                else begin
-                    // Same priority - use FIFO (older = higher waiting time)
-                    if (a_waiting_time >= b_waiting_time) begin
-                        select_a = 1'b1;
-                        out_zone_id = a_zone_id;
-                        out_priority = a_priority;
-                        out_waiting_time = a_waiting_time;
-                        out_boost = a_boost;
-                        out_valid = 1'b1;
-                    end
-                    else begin
-                        select_a = 1'b0;
-                        out_zone_id = b_zone_id;
-                        out_priority = b_priority;
-                        out_waiting_time = b_waiting_time;
-                        out_boost = b_boost;
-                        out_valid = 1'b1;
-                    end
-                end
-            end
-        end
-    end
+    wire a_only, b_only, both_valid;
+    wire a_boost_only, b_boost_only, boost_equal;
+    wire a_pri_higher, pri_equal, a_older;
+    
+    // Valid comparison
+    assign a_only = a_valid & ~b_valid;
+    assign b_only = b_valid & ~a_valid;
+    assign both_valid = a_valid & b_valid;
+    
+    // Boost comparison
+    assign a_boost_only = a_boost & ~b_boost;
+    assign b_boost_only = b_boost & ~a_boost;
+    assign boost_equal = (a_boost == b_boost);
+    
+    // Priority comparison
+    assign a_pri_higher = (a_priority > b_priority);
+    assign pri_equal = (a_priority == b_priority);
+    
+    // Waiting time comparison (older = higher waiting time, use >= for consistency)
+    assign a_older = (a_waiting_time >= b_waiting_time);
+    
+    // Selection logic
+    assign select_a = a_only |
+                      (both_valid & a_boost_only) |
+                      (both_valid & boost_equal & a_pri_higher) |
+                      (both_valid & boost_equal & pri_equal & a_older);
+    
+    // Output multiplexing
+    assign out_zone_id = select_a ? a_zone_id : b_zone_id;
+    assign out_priority = select_a ? a_priority : b_priority;
+    assign out_waiting_time = select_a ? a_waiting_time : b_waiting_time;
+    assign out_boost = select_a ? a_boost : b_boost;
+    assign out_valid = select_a ? a_valid : b_valid;
 
 endmodule
 
 // ----------------------------------------------------------------------------
-// MODULE: Serve Decoder (Behavioral)
+// MODULE: Serve Decoder (Dataflow)
 // ----------------------------------------------------------------------------
-module serve_decoder_beh (
+module serve_decoder_dataflow_food (
     input wire serve,
     input wire [1:0] selected_index,
-    output reg serve_0,
-    output reg serve_1,
-    output reg serve_2,
-    output reg serve_3
+    output wire serve_0,
+    output wire serve_1,
+    output wire serve_2,
+    output wire serve_3
 );
 
-    always @(*) begin
-        serve_0 = 1'b0;
-        serve_1 = 1'b0;
-        serve_2 = 1'b0;
-        serve_3 = 1'b0;
-        
-        if (serve) begin
-            case (selected_index)
-                2'b00: serve_0 = 1'b1;
-                2'b01: serve_1 = 1'b1;
-                2'b10: serve_2 = 1'b1;
-                2'b11: serve_3 = 1'b1;
-            endcase
-        end
-    end
+    assign serve_0 = (selected_index == 2'b00) & serve;
+    assign serve_1 = (selected_index == 2'b01) & serve;
+    assign serve_2 = (selected_index == 2'b10) & serve;
+    assign serve_3 = (selected_index == 2'b11) & serve;
 
 endmodule
 
 // ----------------------------------------------------------------------------
-// MODULE: Queue Storage (Behavioral)
+// MODULE: Queue Storage (Dataflow)
 // ----------------------------------------------------------------------------
-module queue_storage_beh (
+module queue_storage_dataflow_food (
     input wire clk,
     input wire rst_n,
     input wire insert,
@@ -272,38 +198,29 @@ module queue_storage_beh (
 );
 
     // Write enable signals
-    reg write_en_0, write_en_1, write_en_2, write_en_3;
+    wire write_en_0, write_en_1, write_en_2, write_en_3;
     
     // Serve signals
     wire serve_0, serve_1, serve_2, serve_3;
     
+    // Cancel signals
+    wire cancel_0, cancel_1, cancel_2, cancel_3;
+    
     // Clear signals
-    reg clear_0, clear_1, clear_2, clear_3;
+    wire clear_0, clear_1, clear_2, clear_3;
     
     // Boost signals
     wire should_boost_0, should_boost_1, should_boost_2, should_boost_3;
     
-    // Write enable logic
-    always @(*) begin
-        write_en_0 = 1'b0;
-        write_en_1 = 1'b0;
-        write_en_2 = 1'b0;
-        write_en_3 = 1'b0;
-        
-        if (insert) begin
-            if (!entry0_valid)
-                write_en_0 = 1'b1;
-            else if (!entry1_valid)
-                write_en_1 = 1'b1;
-            else if (!entry2_valid)
-                write_en_2 = 1'b1;
-            else if (!entry3_valid)
-                write_en_3 = 1'b1;
-        end
-    end
+    // Write enable logic (priority: slot 0 first)
+    assign write_en_0 = insert & ~entry0_valid;
+    assign write_en_1 = insert & entry0_valid & ~entry1_valid;
+    assign write_en_2 = insert & entry0_valid & entry1_valid & ~entry2_valid;
+    assign write_en_3 = insert & entry0_valid & entry1_valid & entry2_valid & ~entry3_valid;
     
     // Serve decoder
-    serve_decoder_beh serve_dec (
+    serve_decoder_dataflow_food
+ serve_dec (
         .serve(serve),
         .selected_index(selected_index),
         .serve_0(serve_0),
@@ -312,16 +229,20 @@ module queue_storage_beh (
         .serve_3(serve_3)
     );
     
-    // Clear logic (serve or cancel)
-    always @(*) begin
-        clear_0 = serve_0 | (cancel_en & (entry0_zone_id == cancel_zone) & entry0_valid);
-        clear_1 = serve_1 | (cancel_en & (entry1_zone_id == cancel_zone) & entry1_valid);
-        clear_2 = serve_2 | (cancel_en & (entry2_zone_id == cancel_zone) & entry2_valid);
-        clear_3 = serve_3 | (cancel_en & (entry3_zone_id == cancel_zone) & entry3_valid);
-    end
+    // Cancel logic (only cancel valid entries)
+    assign cancel_0 = (entry0_zone_id == cancel_zone) & cancel_en & entry0_valid;
+    assign cancel_1 = (entry1_zone_id == cancel_zone) & cancel_en & entry1_valid;
+    assign cancel_2 = (entry2_zone_id == cancel_zone) & cancel_en & entry2_valid;
+    assign cancel_3 = (entry3_zone_id == cancel_zone) & cancel_en & entry3_valid;
+    
+    // Clear signals (serve or cancel)
+    assign clear_0 = serve_0 | cancel_0;
+    assign clear_1 = serve_1 | cancel_1;
+    assign clear_2 = serve_2 | cancel_2;
+    assign clear_3 = serve_3 | cancel_3;
     
     // Request registers
-    request_register_beh reg0 (
+    request_register_dataflow_food reg0 (
         .clk(clk),
         .rst_n(rst_n),
         .write_en(write_en_0),
@@ -337,7 +258,7 @@ module queue_storage_beh (
         .boost_out(entry0_boost)
     );
     
-    request_register_beh reg1 (
+    request_register_dataflow_food reg1 (
         .clk(clk),
         .rst_n(rst_n),
         .write_en(write_en_1),
@@ -353,7 +274,7 @@ module queue_storage_beh (
         .boost_out(entry1_boost)
     );
     
-    request_register_beh reg2 (
+    request_register_dataflow_food reg2 (
         .clk(clk),
         .rst_n(rst_n),
         .write_en(write_en_2),
@@ -369,7 +290,7 @@ module queue_storage_beh (
         .boost_out(entry2_boost)
     );
     
-    request_register_beh reg3 (
+    request_register_dataflow_food reg3 (
         .clk(clk),
         .rst_n(rst_n),
         .write_en(write_en_3),
@@ -386,28 +307,32 @@ module queue_storage_beh (
     );
     
     // Threshold comparators
-    threshold_comparator_beh comp0 (
+    threshold_comparator_dataflow_food
+ comp0 (
         .waiting_time(entry0_waiting_time),
         .threshold(threshold),
         .valid(entry0_valid),
         .should_boost(should_boost_0)
     );
     
-    threshold_comparator_beh comp1 (
+    threshold_comparator_dataflow_food
+ comp1 (
         .waiting_time(entry1_waiting_time),
         .threshold(threshold),
         .valid(entry1_valid),
         .should_boost(should_boost_1)
     );
     
-    threshold_comparator_beh comp2 (
+    threshold_comparator_dataflow_food
+ comp2 (
         .waiting_time(entry2_waiting_time),
         .threshold(threshold),
         .valid(entry2_valid),
         .should_boost(should_boost_2)
     );
     
-    threshold_comparator_beh comp3 (
+    threshold_comparator_dataflow_food
+ comp3 (
         .waiting_time(entry3_waiting_time),
         .threshold(threshold),
         .valid(entry3_valid),
@@ -420,9 +345,9 @@ module queue_storage_beh (
 endmodule
 
 // ----------------------------------------------------------------------------
-// MODULE: Priority Selector Tree (Behavioral)
+// MODULE: Priority Selector Tree (Dataflow)
 // ----------------------------------------------------------------------------
-module priority_selector_tree_beh (
+module priority_selector_tree_dataflow_food (
     input wire [7:0] entry0_zone_id,
     input wire [1:0] entry0_priority,
     input wire [7:0] entry0_waiting_time,
@@ -462,8 +387,9 @@ module priority_selector_tree_beh (
     wire winner_01_valid, winner_23_valid;
     wire select_01_a, select_23_a, select_final_a;
     
-    // First level comparisons
-    priority_encoder_2to1_beh comp_01 (
+    // First level: compare 0 vs 1
+    priority_encoder_2to1_dataflow_food
+ comp_01 (
         .a_zone_id(entry0_zone_id),
         .a_priority(entry0_priority),
         .a_waiting_time(entry0_waiting_time),
@@ -482,7 +408,9 @@ module priority_selector_tree_beh (
         .select_a(select_01_a)
     );
     
-    priority_encoder_2to1_beh comp_23 (
+    // First level: compare 2 vs 3
+    priority_encoder_2to1_dataflow_food
+ comp_23 (
         .a_zone_id(entry2_zone_id),
         .a_priority(entry2_priority),
         .a_waiting_time(entry2_waiting_time),
@@ -501,8 +429,9 @@ module priority_selector_tree_beh (
         .select_a(select_23_a)
     );
     
-    // Final comparison
-    priority_encoder_2to1_beh comp_final (
+    // Final level: compare winners
+    priority_encoder_2to1_dataflow_food
+ comp_final (
         .a_zone_id(winner_01_zone),
         .a_priority(winner_01_pri),
         .a_waiting_time(winner_01_wait),
@@ -522,28 +451,15 @@ module priority_selector_tree_beh (
     );
     
     // Index tracking
-    reg [1:0] index_01, index_23;
+    wire [1:0] index_01, index_23;
     
-    always @(*) begin
-        if (select_01_a)
-            index_01 = 2'b00;
-        else
-            index_01 = 2'b01;
-            
-        if (select_23_a)
-            index_23 = 2'b10;
-        else
-            index_23 = 2'b11;
-    end
-    
+    assign index_01 = select_01_a ? 2'b00 : 2'b01;
+    assign index_23 = select_23_a ? 2'b10 : 2'b11;
     assign selected_index = select_final_a ? index_01 : index_23;
 
 endmodule
 
-// ----------------------------------------------------------------------------
-// MODULE: Complex Priority Queue (Top Level)
-// ----------------------------------------------------------------------------
-module priority_Queue (
+module priority_queue_dataflow_food (
     input wire clk,
     input wire rst_n,
     input wire insert,
@@ -569,7 +485,8 @@ module priority_Queue (
     wire [1:0] selected_index;
     wire [7:0] selected_waiting_time;
     
-    queue_storage_beh queue (
+    queue_storage_dataflow_food
+ queue (
         .clk(clk),
         .rst_n(rst_n),
         .insert(insert),
@@ -603,7 +520,7 @@ module priority_Queue (
         .queue_full(queue_full)
     );
     
-    priority_selector_tree_beh selector (
+    priority_selector_tree_dataflow_food selector (
         .entry0_zone_id(entry0_zone_id),
         .entry0_priority(entry0_priority),
         .entry0_waiting_time(entry0_waiting_time),
@@ -633,4 +550,3 @@ module priority_Queue (
     );
 
 endmodule
-

@@ -109,7 +109,7 @@ module Main_behavioral (
     // --- Component Instantiation ---
 
     // 1. Shelter Q
-    priority_Queue shelter_module_inst (
+    priority_Queue_shelter shelter_module_inst (
         .clk           (Clock),
         .rst_n         (~Reset_Queue),
         .insert        (w_shelter_insert_en),
@@ -128,7 +128,7 @@ module Main_behavioral (
     );
 
     // 2. Food Q 
-    priority_Queue food_module_inst (
+    priority_Queue_food food_module_inst (
         .clk           (Clock),
         .rst_n         (~Reset_Queue),
         .insert        (w_food_insert_en),

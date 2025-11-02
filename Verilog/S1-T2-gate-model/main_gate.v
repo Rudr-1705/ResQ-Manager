@@ -125,7 +125,7 @@ module Main_gate (
     // --- Component Instantiation ---
 
     // 1. Shelter Q (Complex Prio Q)
-    priority_Queue_gate shelter_module_inst (
+    priority_Queue_gate_shelter shelter_module_inst (
         .clk           (Clock),
         .rst_n         (w_rst_n),
         .insert        (w_shelter_insert_en),
@@ -144,7 +144,7 @@ module Main_gate (
     );
 
     // 2. Food Q (Complex Prio Q)
-    priority_Queue_gate food_module_inst (
+    priority_Queue_gate_food food_module_inst (
         .clk           (Clock),
         .rst_n         (w_rst_n),
         .insert        (w_food_insert_en),

@@ -110,7 +110,7 @@ module Main_dataflow (
     // --- Component Instantiation ---
 
     // 1. Shelter Q 
-    priority_queue_dataflow shelter_module_inst (
+    priority_queue_dataflow_shelter shelter_module_inst (
         .clk           (Clock),
         .rst_n         (w_rst_n),
         .insert        (w_shelter_insert_en),
@@ -129,7 +129,7 @@ module Main_dataflow (
     );
 
     // 2. Food Q
-    priority_queue_dataflow food_module_inst (
+    priority_queue_dataflow_food food_module_inst (
         .clk           (Clock),
         .rst_n         (w_rst_n),
         .insert        (w_food_insert_en),
