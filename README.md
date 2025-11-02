@@ -28,7 +28,8 @@
 
 ## Functional Block Diagram
 <details>
-  ![Flowchart](assets/flowchart.jpg)
+
+![flowchart](https://github.com/user-attachments/assets/ddfb64aa-b01f-4bde-8f79-2e63f6ca0b36)
 
   
 </details>
