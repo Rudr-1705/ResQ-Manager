@@ -54,6 +54,8 @@
 ## Verilog Code
 
 <details>
+    <summary>Detail</summary>
+    <details>
     <summary>Verilog Behavioral level code</summary>
       <details>
       <summary>Main FSM Behavioral level code</summary>
@@ -3602,6 +3604,7 @@
        ```
        ```
       </details>
+    </details>
 </details>
 
 ## References
