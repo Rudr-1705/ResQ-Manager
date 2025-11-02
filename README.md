@@ -58,8 +58,11 @@
 
 </de![WhatsApp Image 2025-11-02 at 23 46 29_cd99ccfd](https://github.com/user-attachments/assets/755f041d-d8cf-48ee-b74b-ab291b0f959d)
 
+</details>
+</details>
 
 <!-- Fifth Section -->
+
 ## Verilog Code
 
 <details>
