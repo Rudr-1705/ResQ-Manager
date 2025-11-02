@@ -54,47 +54,75 @@
 ## Verilog Code
 <details>
     <summary>Verilog Behavioral level code</summary>
+      <details>
       <summary>Main FSM Behavioral level code</summary>
       ```
       ```
+      </details>
+      <details>
       <summary>Shelter Module Behavioral level code</summary>
       ```
       ```
+      </details>
+      <details>
       <summary>Food Module Behavioral level code</summary>
       ```
       ```
+      </details>
 </details>
 <details>
     <summary>Verilog Dataflow level code</summary>
+      <details>
       <summary>Main FSM Dataflow level code</summary>
       ```
       ```
+      </details>
+      <details>
       <summary>Shelter Module Dataflow level code</summary>
       ```
       ```
+      </details>
+      <details>
       <summary>Food Module Dataflow level code</summary>
       ```
       ```
+      </details>
 </details>
 <details>
     <summary>Verilog Gate level code</summary>
+      <details>
       <summary>Main FSM Gate level code</summary>
       ```
       ```
+      </details>
+      <details>
       <summary>Shelter Module Gate level code</summary>
       ```
       ```
+      </details>
+      <details>
       <summary>Food Module Gate level code</summary>
       ```
       ```
+      </details>
 </details>
 <details>
     <summary>TestBench</summary>
+      <details>
       <summary>Main FSM TestBench</summary>
+      ```
+      ```
+      </details>
+      <details>
       <summary>Shelter Module TestBench</summary>
        ```
        ```
+      </details>
+      <details>
       <summary>Food Module TestBench</summary>
+       ```
+       ```
+      </details>
 </details>
 
 ## References
